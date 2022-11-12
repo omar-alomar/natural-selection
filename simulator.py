@@ -1,10 +1,10 @@
 import pygame
 from random import randint
+from dino import Dino
 
-WIDTH = 900
+WIDTH = 1200
 HEIGHT = 900
 FPS_LIMIT = 60
-
 
 def buildArena():
     bgSurf = pygame.Surface((WIDTH, HEIGHT))
@@ -21,8 +21,8 @@ def buildArena():
     for i in range(0, WIDTH, 24):
         for j in range(0, HEIGHT, 24):
             bgSurf.blit(grassTile, (i, j))  # render grass
-            if (randint(0, 15) > randint(0, 100)):  # 'randomly' render some shrubs
-                bgSurf.blit(shrubs[randint(0, 3)], (i, j))
+            # if (randint(0, 15) > randint(0, 100)):  # 'randomly' render some shrubs
+            #     bgSurf.blit(shrubs[randint(0, 3)], (i, j))
 
     # Bases
     douxBase = pygame.image.load('assets/img/doux_base.png').convert_alpha()  # 44x45 top
@@ -39,32 +39,44 @@ def buildArena():
         bgSurf.blit(bases[0], (i, 0))
         bgSurf.blit(bases[1], (i, HEIGHT - 90))
     for j in range(0, HEIGHT, 84):
-        bgSurf.blit(bases[3], (0, j))
+        bgSurf.blit(bases[3], (-2, j))
         bgSurf.blit(bases[2], (WIDTH - 92, j))
 
     # Corners
     corner = pygame.image.load('assets/img/water.png').convert_alpha()
-    corner = pygame.transform.scale(corner, (90, 92))
-    bgSurf.blit(corner, (0, 0))
-    bgSurf.blit(corner, (WIDTH - 92, 0))
-    bgSurf.blit(corner, (0, HEIGHT - 90))
-    bgSurf.blit(corner, (WIDTH - 92, HEIGHT - 90))
+    corner = pygame.transform.scale(corner, (120, 120))
+    bgSurf.blit(corner, (-25, -18))
+    bgSurf.blit(corner, (WIDTH - 92, -18))
+    bgSurf.blit(corner, (-25, HEIGHT - 100))
+    bgSurf.blit(corner, (WIDTH - 92, HEIGHT - 100))
 
     screen.blit(bgSurf, (0, 0))
 
-
+# SETUP
 pygame.init()
 pygame.display.set_caption("Dino Evolution ")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 pixelFont = pygame.font.Font('assets/font/Pixeltype.ttf', 50)
-
 dayNo = 0  # day counter
-day = True  # true if day, false if night
 run = True  # game loop bool
-
-
 buildArena()
+
+# DINO GROUPS
+douxs = pygame.sprite.Group()
+doux1 = Dino('doux', 5.0, 1.0, 5.0)
+douxs.add(doux1)
+morts = pygame.sprite.Group()
+mort1 = Dino('mort', 5.0, 1.0, 5.0) 
+morts.add(mort1)
+tards = pygame.sprite.Group()
+tard1 = Dino('tard', 5.0, 1.0, 5.0)
+tards.add(tard1)
+vitas = pygame.sprite.Group()
+vita1 = Dino('vita', 5.0, 1.0, 5.0)
+vitas.add(vita1)
+
+
 
 # GAME LOOP
 while run:
@@ -73,6 +85,20 @@ while run:
         if event.type == pygame.QUIT:
             pygame.quit()
             run = False
+
+    buildArena()
+
+    douxs.draw(screen)
+    douxs.update()
+    morts.draw(screen)
+    morts.update()
+    tards.draw(screen)
+    tards.update()
+    vitas.draw(screen)
+    vitas.update()
+    doux1.moveRight()
+    doux1.moveDown()
+    tard1.moveLeft()
 
     pygame.display.update()
     clock.tick(FPS_LIMIT)
