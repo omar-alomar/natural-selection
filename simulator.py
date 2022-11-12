@@ -67,13 +67,13 @@ douxs = pygame.sprite.Group()
 doux1 = Dino('doux', 5.0, 1.0, 5.0)
 douxs.add(doux1)
 morts = pygame.sprite.Group()
-mort1 = Dino('mort', 5.0, 1.0, 5.0) 
+mort1 = Dino('mort', 5.0, 1.5, 5.0) 
 morts.add(mort1)
 tards = pygame.sprite.Group()
-tard1 = Dino('tard', 5.0, 1.0, 5.0)
+tard1 = Dino('tard', 5.0, 2.0, 5.0)
 tards.add(tard1)
 vitas = pygame.sprite.Group()
-vita1 = Dino('vita', 5.0, 1.0, 5.0)
+vita1 = Dino('vita', 5.0, 3.0, 5.0)
 vitas.add(vita1)
 
 
@@ -85,6 +85,15 @@ while run:
         if event.type == pygame.QUIT:
             pygame.quit()
             run = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+            mort1.moveUp()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
+            mort1.moveLeft()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+            mort1.moveUp()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+            mort1.moveRight()
+
 
     buildArena()
 
@@ -96,9 +105,6 @@ while run:
     tards.update()
     vitas.draw(screen)
     vitas.update()
-    doux1.moveRight()
-    doux1.moveDown()
-    tard1.moveLeft()
 
     pygame.display.update()
     clock.tick(FPS_LIMIT)
