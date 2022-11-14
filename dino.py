@@ -1,7 +1,7 @@
 import pygame
 
-WIDTH = 1200
-HEIGHT = 900
+WIDTH = 900
+HEIGHT = 600
 
 class Dino(pygame.sprite.Sprite):
     def __init__(self, type: str, speed: float, size: float, energy: float):
