@@ -82,3 +82,41 @@ class Dino(pygame.sprite.Sprite):
     def getPos(self):
         return (self.rect.x, self.rect.y)
 
+    #ENERGY SYSTEM
+    energy = 100
+    
+    def energySpeed(self):
+        self.energy = 100 / self.speed  
+    
+    def energySize(self): 
+        self.energy = 100 / self.size
+
+    def energyGone(self):
+        while(self.energy == 0):
+            self.isAnimating = False
+            
+            # Dino won't move again until energy = 100
+            while(self.energy > 100):
+                self.energy += 2
+        
+        self.isAnimating = True; 
+        
+     #ENERGY PRINT
+    def printEnergy(self):
+        print (self.energy + "Is current Energy")
+
+
+   
+
+             
+
+
+
+
+            
+        
+
+
+   
+
+
