@@ -41,25 +41,14 @@ pixelFont = pygame.font.Font('assets/font/Pixeltype.ttf', 50)
 dayNo = 0  # day counter
 run = True  # game loop bool
 
-# GROUPS
-douxs = pygame.sprite.Group()
-doux1 = Dino('doux', 5.0, 1.0, 5.0)
-douxs.add(doux1)
-morts = pygame.sprite.Group()
-mort1 = Dino('mort', 5.0, 1.5, 5.0)
-morts.add(mort1)
-tards = pygame.sprite.Group()
-tard1 = Dino('tard', 5.0, 2.0, 5.0)
-tards.add(tard1)
-vitas = pygame.sprite.Group()
-vita1 = Dino('vita', 5.0, 3.0, 5.0)
-vitas.add(vita1)
-
+# BASES
+#   dinos are ONLY spawned & killed through these bases.
+#   bases are what track each species population.
 bases = pygame.sprite.Group()
-douxBase = Base('doux')
-mortBase = Base('mort')
-tardBase = Base('tard')
-vitaBase = Base('vita')
+douxBase = Base('doux', 100)
+mortBase = Base('mort', 100)
+tardBase = Base('tard', 100)
+vitaBase = Base('vita', 100)
 bases.add(douxBase,mortBase,tardBase, vitaBase)
 
 # GAME LOOP
@@ -69,27 +58,26 @@ while run:
         if event.type == pygame.QUIT:
             pygame.quit()
             run = False
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
-            mort1.moveUp()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
-            mort1.moveLeft()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
-            mort1.moveDown()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_d:
-            mort1.moveRight()
 
     buildArena()
 
     bases.draw(screen)
 
-    douxs.draw(screen)
-    douxs.update()
-    morts.draw(screen)
-    morts.update()
-    tards.draw(screen)
-    tards.update()
-    vitas.draw(screen)
-    vitas.update()
+    douxs = douxBase.getDinos()
+    douxBase.getDinoGroup().draw(screen)
+    douxBase.getDinoGroup().update()
+
+    morts = mortBase.getDinos()
+    mortBase.getDinoGroup().draw(screen)
+    mortBase.getDinoGroup().update()
+
+    tards = tardBase.getDinos()
+    tardBase.getDinoGroup().draw(screen)
+    tardBase.getDinoGroup().update()
+
+    vitas = vitaBase.getDinos()
+    vitaBase.getDinoGroup().draw(screen)
+    vitaBase.getDinoGroup().update()
 
 
     pygame.display.update()

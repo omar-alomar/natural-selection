@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 
 WIDTH = 900
 HEIGHT = 600
@@ -32,15 +33,22 @@ class Dino(pygame.sprite.Sprite):
         self.currentAnimation = self.walkSprites
         self.image = self.currentAnimation[self.animationIndex]
 
-        # DINO SPRITE RECTS
+        # DINO SPRITE RECTS                
+        xOffsetHorz = randint(100, WIDTH - 100)
+        yOffsetHorzTop = randint(0, 75)
+        yOffsetHorzBottom = randint(HEIGHT - 75, HEIGHT)
+        xOffsetVert = randint(0, 75)
+        xOffsetVertRight = randint(WIDTH - 75, WIDTH)
+        yOffsetVert = randint(100, HEIGHT - 100)
+        
         if type == 'doux':
-            self.rect = self.image.get_rect(center=(WIDTH / 2, 50))
+            self.rect = self.image.get_rect(center=(xOffsetHorz, yOffsetHorzTop))
         if type == 'mort':
-            self.rect = self.image.get_rect(center=(WIDTH / 2, HEIGHT - 50))
+            self.rect = self.image.get_rect(center=(xOffsetHorz, yOffsetHorzBottom))
         if type == 'tard':
-            self.rect = self.image.get_rect(center=(WIDTH - 50, HEIGHT / 2))
+            self.rect = self.image.get_rect(center=( xOffsetVertRight, yOffsetVert))
         if type == 'vita':
-            self.rect = self.image.get_rect(center=(50, HEIGHT / 2))
+            self.rect = self.image.get_rect(center=(xOffsetVert, yOffsetVert))
 
     def animate(self):
         self.isAnimating = True
@@ -82,3 +90,4 @@ class Dino(pygame.sprite.Sprite):
     def getPos(self):
         return (self.rect.x, self.rect.y)
 
+        
