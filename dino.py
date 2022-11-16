@@ -1,14 +1,16 @@
 import pygame
+from const import WIDTH, HEIGHT
 from random import randint
-
-WIDTH = 900
-HEIGHT = 600
+import uuid
 
 class Dino(pygame.sprite.Sprite):
-    def __init__(self, type: str, speed: float, size: float, energy: float):
+    def __init__(self, type: str, speed: float, size: float):
         super().__init__()
         self.speed = speed
         self.size = size
+        self.id = uuid.uuid4()
+        self.energy = 500
+
         if type == 'doux': # blue
             self.spriteSheet = pygame.image.load('assets/img/doux.png').convert_alpha()
         if type == 'mort': # red
@@ -33,7 +35,7 @@ class Dino(pygame.sprite.Sprite):
         self.currentAnimation = self.walkSprites
         self.image = self.currentAnimation[self.animationIndex]
 
-        # DINO SPRITE RECTS                
+        # RANDOM DINOS SPAWNS WITHIN BASE             
         xOffsetHorz = randint(100, WIDTH - 100)
         yOffsetHorzTop = randint(0, 75)
         yOffsetHorzBottom = randint(HEIGHT - 75, HEIGHT)
@@ -89,5 +91,17 @@ class Dino(pygame.sprite.Sprite):
     
     def getPos(self):
         return (self.rect.x, self.rect.y)
+    
+    def getSpeed(self):
+        return self.speed
+    
+    def getSize(self):
+        return self.size
+    
+    def getId(self):
+        return self.id
+    
+    def getEnergy(self):
+        return self.energy
 
         

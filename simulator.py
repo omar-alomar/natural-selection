@@ -1,12 +1,8 @@
 import pygame
 from random import randint
-from dino import Dino
+from const import WIDTH, HEIGHT, FPS_LIMIT
 from base import Base
-
-# !!NEED TO CHANGE W & H VALUES IN EVERY FILE FOR NOW!!
-WIDTH = 900
-HEIGHT = 600
-FPS_LIMIT = 60
+from food import Food
 
 def buildArena():
     bgSurf = pygame.Surface((WIDTH, HEIGHT))
@@ -38,18 +34,29 @@ pygame.display.set_caption("Dino Evolution ")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 pixelFont = pygame.font.Font('assets/font/Pixeltype.ttf', 50)
-dayNo = 0  # day counter
-run = True  # game loop bool
 
 # BASES
-#   dinos are ONLY spawned & killed through these bases.
+#   !!! dinos are ONLY spawned & killed through these bases !!!
 #   bases are what track each species population.
 bases = pygame.sprite.Group()
-douxBase = Base('doux', 100)
-mortBase = Base('mort', 100)
-tardBase = Base('tard', 100)
-vitaBase = Base('vita', 100)
+douxBase = Base('doux', 20)
+mortBase = Base('mort', 20)
+tardBase = Base('tard', 20)
+vitaBase = Base('vita', 20)
 bases.add(douxBase,mortBase,tardBase, vitaBase)
+
+# FOOD
+foodGroup = pygame.sprite.Group()
+for i in range(150, WIDTH - 150, 24):
+        for j in range(150, HEIGHT - 150, 24):
+            if (randint(0, 2) > randint(0, 100)):  # change these to increase / decrease food count
+                food = Food(i, j)
+                foodGroup.add(food)
+
+
+dayNo = 0  # day counter
+run = True  # game loop bool
+dinosActive = False # true if dinos are running around
 
 # GAME LOOP
 while run:
@@ -60,24 +67,71 @@ while run:
             run = False
 
     buildArena()
+    foodGroup.draw(screen)
 
+    # DRAW BASES & DINOS
     bases.draw(screen)
 
     douxs = douxBase.getDinos()
-    douxBase.getDinoGroup().draw(screen)
-    douxBase.getDinoGroup().update()
+    douxGroup = douxBase.getDinoGroup()
+    douxGroup.draw(screen)
+    douxGroup.update()
 
     morts = mortBase.getDinos()
-    mortBase.getDinoGroup().draw(screen)
-    mortBase.getDinoGroup().update()
+    mortGroup = mortBase.getDinoGroup()
+    mortGroup.draw(screen)
+    mortGroup.update()
 
     tards = tardBase.getDinos()
-    tardBase.getDinoGroup().draw(screen)
-    tardBase.getDinoGroup().update()
-
+    tardGroup = tardBase.getDinoGroup()
+    tardGroup.draw(screen)
+    tardGroup.update() 
+    
     vitas = vitaBase.getDinos()
-    vitaBase.getDinoGroup().draw(screen)
-    vitaBase.getDinoGroup().update()
+    vitaGroup = vitaBase.getDinoGroup()
+    vitaGroup.draw(screen)
+    vitaGroup.update()
+
+    # COLLISION HANDLING
+    for doux in douxs:
+        mort = pygame.sprite.spritecollideany(doux, mortGroup) 
+        tard = pygame.sprite.spritecollideany(doux, tardGroup) 
+        vita = pygame.sprite.spritecollideany(doux, vitaGroup) 
+
+        if mort and doux.getSize() > mort.getSize():
+            mortBase.killDino(mort.getId())
+        elif mort and doux.getSize() < mort.getSize():
+            douxBase.killDino(doux.getId())
+
+        elif tard and doux.getSize() > tard.getSize():
+            tardBase.killDino(tard.getId())
+        elif tard and doux.getSize() < tard.getSize():
+            douxBase.killDino(doux.getId())
+
+        elif vita and doux.getSize() < vita.getSize():
+            vitaBase.killDino(vita.getId())
+        elif vita and doux.getSize() < vita.getSize():
+            douxBase.killDino(doux.getId())
+
+    for vita in vitas: 
+        mort = pygame.sprite.spritecollideany(vita, mortGroup) 
+        tard = pygame.sprite.spritecollideany(vita, tardGroup) 
+
+        if mort and vita.getSize() > mort.getSize():
+            mortBase.killDino(mort.getId())
+        elif mort and vita.getSize() < mort.getSize():
+            vitaBase.killDino(vita.getId())
+
+        if mort and vita.getSize() > mort.getSize():
+            mortBase.killDino(mort.getId())
+        elif mort and vita.getSize() < mort.getSize():
+            vitaBase.killDino(vita.getId())
+        
+    
+    for i in range(len(douxs)):
+        douxs[i].moveDown()
+        tards[i].moveLeft()
+        # morts[i].moveUp()
 
 
     pygame.display.update()
