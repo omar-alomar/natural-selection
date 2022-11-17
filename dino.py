@@ -11,7 +11,7 @@ class Dino(pygame.sprite.Sprite):
         self.size = size
         self.hunger = True
         self.id = uuid.uuid4()
-        self.energy = 500
+        self.energy = 100
 
         if self.type == 'doux': # blue
             self.spriteSheet = pygame.image.load('assets/img/doux.png').convert_alpha()
@@ -74,22 +74,30 @@ class Dino(pygame.sprite.Sprite):
         return image
         
     def moveRight(self):
-        self.rect.x += self.speed * self.speed / 10
-        self.currentAnimation = self.walkSprites
-        self.animate()
+        if self.energy > 0:
+            self.energy -= 1
+            self.rect.x += self.speed * self.speed / 10
+            self.currentAnimation = self.walkSprites
+            self.animate()
 
     def moveLeft(self):
-        self.rect.x -= self.speed * self.speed / 10
-        self.currentAnimation = self.walkSpritesInverted
-        self.animate()
+        if self.energy > 0:
+            self.energy -= 1
+            self.rect.x -= self.speed * self.speed / 10
+            self.currentAnimation = self.walkSpritesInverted
+            self.animate()
 
     def moveUp(self):
-        self.rect.y -= self.speed * self.speed / 10
-        self.animate()
+        if self.energy > 0:
+            self.energy -= 1
+            self.rect.y -= self.speed * self.speed / 10
+            self.animate()
     
     def moveDown(self):
-        self.rect.y += self.speed * self.speed / 10
-        self.animate()
+        if self.energy > 0:
+            self.energy -= 1
+            self.rect.y += self.speed * self.speed / 10
+            self.animate()
     
     def runHome(self):
         if self.type == 'doux':
@@ -135,4 +143,3 @@ class Dino(pygame.sprite.Sprite):
     def setHunger(self, val: bool):
         self.hunger = val
 
-        

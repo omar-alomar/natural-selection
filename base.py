@@ -91,6 +91,7 @@ class Base(pygame.sprite.Sprite):
             if dino.getId() == id:
                 dino.kill()
                 self.dinos.remove(dino)
+        self.population = len(self.dinos)
     
     def getDinoGroup(self): # returns dino sprite group
         return self.group

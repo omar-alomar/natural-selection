@@ -4,6 +4,7 @@ from const import WIDTH, HEIGHT, FPS_LIMIT
 from base import Base
 from food import Food
 
+
 def buildArena():
     bgSurf = pygame.Surface((WIDTH, HEIGHT))
 
@@ -203,6 +204,14 @@ while run:
                     dino.moveRight()
             else:
                 dino.runHome()
+    
+    # Energy system
+    for base in bases:
+        dinos = base.getDinos()
+        for dino in dinos:
+            if dino.getEnergy() <= 0:
+                base.killDino(dino.getId())
+                
 
     pygame.display.update()
     clock.tick(FPS_LIMIT)
