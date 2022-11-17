@@ -22,23 +22,23 @@ class Base(pygame.sprite.Sprite):
 
         if type == 'doux':
             self.image = pygame.image.load('assets/img/doux_base1.png').convert_alpha() 
-            self.rect = self.image.get_rect(topleft=(100, -10))
             self.image = self.makeTiledImage(WIDTH * self.widthOffset, self.image.get_height(), 5, 0)
+            self.rect = self.image.get_rect(topleft=(100, -10))
 
         if type == 'mort': 
             self.image = pygame.image.load('assets/img/mort_base1.png').convert_alpha()  
-            self.rect = self.image.get_rect(topleft=(100, HEIGHT - 80))
             self.image = self.makeTiledImage(WIDTH * self.widthOffset, self.image.get_height(), 5, 0)
+            self.rect = self.image.get_rect(topleft=(100, HEIGHT - 80))
 
         if type == 'tard':
             self.image = pygame.image.load('assets/img/tard_base1.png').convert_alpha()  
-            self.rect = self.image.get_rect(topleft=(WIDTH - 79, 100))
             self.image = self.makeTiledImage(self.image.get_width(), HEIGHT * self.heightOffset, 0, 5)
+            self.rect = self.image.get_rect(topleft=(WIDTH - 79, 100))
 
         if type == 'vita': 
             self.image = pygame.image.load('assets/img/vita_base1.png').convert_alpha()  
-            self.rect = self.image.get_rect(topleft=(-15,100))
             self.image = self.makeTiledImage(self.image.get_width(), HEIGHT * self.heightOffset, 0, 5)
+            self.rect = self.image.get_rect(topleft=(-15,100))
 
     # HELPER:
     # Cuts up spritesheet

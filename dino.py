@@ -6,18 +6,20 @@ import uuid
 class Dino(pygame.sprite.Sprite):
     def __init__(self, type: str, speed: float, size: float):
         super().__init__()
+        self.type = type
         self.speed = speed
         self.size = size
+        self.hunger = True
         self.id = uuid.uuid4()
         self.energy = 500
 
-        if type == 'doux': # blue
+        if self.type == 'doux': # blue
             self.spriteSheet = pygame.image.load('assets/img/doux.png').convert_alpha()
-        if type == 'mort': # red
+        if self.type == 'mort': # red
             self.spriteSheet = pygame.image.load('assets/img/mort.png').convert_alpha()
-        if type == 'tard': # yellow
+        if self.type == 'tard': # yellow
             self.spriteSheet = pygame.image.load('assets/img/tard.png').convert_alpha()
-        if type == 'vita': # green
+        if self.type == 'vita': # green
             self.spriteSheet = pygame.image.load('assets/img/vita.png').convert_alpha()
         # else: type = 'doux' # this line breaks drawing dinos to screen. No idea why.
 
@@ -89,8 +91,28 @@ class Dino(pygame.sprite.Sprite):
         self.rect.y += self.speed * self.speed / 10
         self.animate()
     
-    def getPos(self):
-        return (self.rect.x, self.rect.y)
+    def runHome(self):
+        if self.type == 'doux':
+            if (self.getPosY() > randint(60, 120)):
+                self.moveUp()
+
+        if self.type == 'mort':
+            if (self.getPosY() < HEIGHT - randint(60, 120)):
+                self.moveDown()    
+
+        if self.type == 'tard':
+            if (self.getPosX() < WIDTH - randint(60, 120)):
+                self.moveRight()   
+
+        if self.type == 'vita':
+            if (self.getPosX() > randint(0, 120)):
+                self.moveLeft()    
+
+    def getPosX(self):
+        return self.rect.x
+    
+    def getPosY(self):
+        return self.rect.y
     
     def getSpeed(self):
         return self.speed
@@ -103,5 +125,14 @@ class Dino(pygame.sprite.Sprite):
     
     def getEnergy(self):
         return self.energy
+    
+    def getHunger(self):
+        return self.hunger
+    
+    def getType(self):
+        return self.type
+    
+    def setHunger(self, val: bool):
+        self.hunger = val
 
         
