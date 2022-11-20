@@ -1,24 +1,22 @@
 import pygame
+from random import randint
 from const import WIDTH, HEIGHT
 from dino import Dino
 
 class Base(pygame.sprite.Sprite):
-    def __init__(self, type: str, popInit: int):
+    def __init__(self, type: str, popInit: int, speedInit: float, sizeInit: float):
         super().__init__()
         self.type = type
         self.population = popInit
+        self.speedInit = speedInit
+        self.sizeInit = sizeInit
         self.dinos = []
         self.group = pygame.sprite.Group()
 
-        if self.type != 'doux':
-            for i in range(popInit):
-                self.spawnDino(9.0, 2.0)
-        
-        if self.type == 'doux':
-            for i in range(popInit):
-                self.spawnDino(9.0, 1.0)
+        for i in range(popInit):
+            self.spawnDino(self.speedInit, self.sizeInit)
 
-        self.setRenderOffset()
+        self.setRenderOffset() 
 
         if type == 'doux':
             self.image = pygame.image.load('assets/img/doux_base1.png').convert_alpha() 
@@ -101,3 +99,31 @@ class Base(pygame.sprite.Sprite):
     
     def getPopulation(self):
         return self.population
+
+    def reproduce(self, offset: float): 
+        for dino in self.group:
+            option = randint(0,3)
+
+            if dino.getSpeed() <= offset:
+                if dino.getSize() <= offset:
+                    self.spawnDino(dino.getSpeed() + offset, dino.getSize() + offset)
+                else:
+                    self.spawnDino(dino.getSpeed() + offset, dino.getSize() - offset)
+            if dino.getSize() <= offset:
+                if dino.getSpeed() <= offset:
+                    self.spawnDino(dino.getSpeed() + offset, dino.getSize() + offset)
+                else:
+                    self.spawnDino(dino.getSpeed() - offset, dino.getSize() + offset)
+
+            
+            elif option == 0 :
+                self.spawnDino(dino.getSpeed() + offset, dino.getSize() + offset)
+            elif option == 1:
+                self.spawnDino(dino.getSpeed() - offset, dino.getSize() - offset)
+            elif option == 2:
+                self.spawnDino(dino.getSpeed() + offset, dino.getSize() - offset)
+            elif option == 3:
+                self.spawnDino(dino.getSpeed() - offset, dino.getSize() + offset)
+
+
+

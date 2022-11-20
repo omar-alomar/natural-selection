@@ -11,7 +11,7 @@ class Dino(pygame.sprite.Sprite):
         self.size = size
         self.hunger = True
         self.id = uuid.uuid4()
-        self.energy = 100
+        self.energy = 500
 
         if self.type == 'doux': # blue
             self.spriteSheet = pygame.image.load('assets/img/doux.png').convert_alpha()
@@ -75,33 +75,33 @@ class Dino(pygame.sprite.Sprite):
         
     def moveRight(self):
         if self.energy > 0:
-            self.energy -= 1
+            self.energy -= self.speed / 5
             self.rect.x += self.speed * self.speed / 10
             self.currentAnimation = self.walkSprites
             self.animate()
 
     def moveLeft(self):
         if self.energy > 0:
-            self.energy -= 1
+            self.energy -= self.speed / 5
             self.rect.x -= self.speed * self.speed / 10
             self.currentAnimation = self.walkSpritesInverted
             self.animate()
 
     def moveUp(self):
         if self.energy > 0:
-            self.energy -= 1
+            self.energy -= self.speed / 5
             self.rect.y -= self.speed * self.speed / 10
             self.animate()
     
     def moveDown(self):
         if self.energy > 0:
-            self.energy -= 1
+            self.energy -= self.speed / 5
             self.rect.y += self.speed * self.speed / 10
             self.animate()
     
     def runHome(self):
         if self.type == 'doux':
-            if (self.getPosY() > randint(60, 120)):
+            if (self.getPosY() > randint(0, 120)):
                 self.moveUp()
 
         if self.type == 'mort':
@@ -115,6 +115,9 @@ class Dino(pygame.sprite.Sprite):
         if self.type == 'vita':
             if (self.getPosX() > randint(0, 120)):
                 self.moveLeft()    
+    
+    # def hunt(self):
+
 
     def getPosX(self):
         return self.rect.x
