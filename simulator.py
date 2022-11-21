@@ -23,6 +23,7 @@ def buildArena():
     corner = pygame.image.load('assets/img/water.png').convert_alpha()
     corner = pygame.transform.scale(corner, (120, 120))
     bgSurf.blit(corner, (-25, -18))
+
     bgSurf.blit(corner, (WIDTH - 92, -18))
     bgSurf.blit(corner, (-25, HEIGHT - 100))
     bgSurf.blit(corner, (WIDTH - 92, HEIGHT - 100))
@@ -49,15 +50,15 @@ pixelFont = pygame.font.Font('assets/font/Pixeltype.ttf', 50)
 
 # INITIAL SETTINGS:
 bases = pygame.sprite.Group()
-douxBase = Base('doux', 15, 10, 1.3)
-mortBase = Base('mort', 15, 7, 1.7)
-tardBase = Base('tard', 20, 8, 1.5)
-vitaBase = Base('vita', 20, 8, 1.4)
+douxBase = Base('doux', 35, 10, 1.4)
+mortBase = Base('mort', 35, 7, 1.6)
+tardBase = Base('tard', 35, 8, 1.51)
+vitaBase = Base('vita', 35, 8, 1.52)
 bases.add(douxBase, mortBase, tardBase, vitaBase)
 
 # FOOD
 foodGroup = pygame.sprite.Group()
-foodGroup = spawnFood(10)
+foodGroup = spawnFood(15)
 
 dayNo = 0  # day counter
 run = True  # game loop bool
@@ -68,8 +69,9 @@ tardFlag = False
 vitaFlag = False 
 allHome = False
 
+# USER EVENTS
 spawnDinos = pygame.USEREVENT + 0
-pygame.time.set_timer(spawnDinos, 2000)
+pygame.time.set_timer(spawnDinos, 1000)
 
 # GAME LOOP
 while run:
@@ -220,15 +222,15 @@ while run:
             if dino.getType() == 'mort':
                 if dino.getPosY() <= 120:
                     mortBase.killDino(dino.getId())
-                if dino.getPosX() <= 0 or dino.getPosX() >= WIDTH:
+                if dino.getPosX() <= 120 or dino.getPosX() >= WIDTH - 120:
                     mortBase.killDino(dino.getId())
             if dino.getType() == 'tard':
-                if dino.getPosY() >= HEIGHT or dino.getPosY() <= 0:
+                if dino.getPosY() >= HEIGHT - 120 or dino.getPosY() <= 120:
                     tardBase.killDino(dino.getId())
                 if dino.getPosX() <= 120:
                     tardBase.killDino(dino.getId())
             if dino.getType() == 'vita':
-                if dino.getPosY() >= HEIGHT or dino.getPosY() <= 0:
+                if dino.getPosY() >= HEIGHT - 120 or dino.getPosY() <= 120:
                     vitaBase.killDino(dino.getId())
                 if dino.getPosX() >= WIDTH - 120:
                     vitaBase.killDino(dino.getId())
@@ -254,24 +256,25 @@ while run:
             food.kill()
             vita.setHunger(False)
 
+    # COLLISIONS: DINO-CORNER
+    for base in bases:
+        for dino in base.getDinoGroup():
+            if dino.getPosX() <= 120 and dino.getPosY() <= 120:
+                base.killDino(dino.getId())
+            if dino.getPosX() >= WIDTH - 120 and dino.getPosY() <= 120:
+                base.killDino(dino.getId())
+            if dino.getPosX() <= 120 and dino.getPosY() >= HEIGHT - 120:
+                base.killDino(dino.getId())
+            if dino.getPosX() >= WIDTH - 120 and dino.getPosY() >= HEIGHT - 120:
+                base.killDino(dino.getId())
+            
     # Hunger/movement system
     for group in groups:
         for dino in group:
-            if dino.getHunger():
-                if dino.getType() == 'doux':
-                    dino.moveDown()
-                if dino.getType() == 'mort':
-                    dino.moveUp()
-                if dino.getType() == 'tard':
-                    dino.moveLeft()
-                if dino.getType() == 'vita':
-                    dino.moveRight()
-            else:
-                dino.runHome()
+            dino.hunt()
     
     # Energy system
     for base in bases:
-        dinos = base.getDinos()
         for dino in base.getDinoGroup():
             if dino.getEnergy() <= 0:
                 base.killDino(dino.getId())

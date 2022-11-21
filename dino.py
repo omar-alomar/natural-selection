@@ -73,30 +73,32 @@ class Dino(pygame.sprite.Sprite):
         image.set_colorkey('Black')
         return image
         
-    def moveRight(self):
-        if self.energy > 0:
+    def moveRight(self, dist=9999):
+        if self.energy > 0 and self.rect.x <= dist:
             self.energy -= self.speed / 5
             self.rect.x += self.speed * self.speed / 10
             self.currentAnimation = self.walkSprites
             self.animate()
 
-    def moveLeft(self):
-        if self.energy > 0:
+    def moveLeft(self, dist=9999):
+        if self.energy > 0 and self.rect.x <= dist:
             self.energy -= self.speed / 5
             self.rect.x -= self.speed * self.speed / 10
             self.currentAnimation = self.walkSpritesInverted
             self.animate()
 
-    def moveUp(self):
-        if self.energy > 0:
+    def moveUp(self, dist=9999):
+        if self.energy > 0 and self.rect.y <= dist:
             self.energy -= self.speed / 5
             self.rect.y -= self.speed * self.speed / 10
+            self.currentAnimation = self.walkSprites
             self.animate()
     
-    def moveDown(self):
-        if self.energy > 0:
+    def moveDown(self, dist=9999):
+        if self.energy > 0 and self.rect.y <= dist:
             self.energy -= self.speed / 5
             self.rect.y += self.speed * self.speed / 10
+            self.currentAnimation = self.walkSpritesInverted
             self.animate()
     
     def runHome(self):
@@ -114,9 +116,45 @@ class Dino(pygame.sprite.Sprite):
 
         if self.type == 'vita':
             if (self.getPosX() > randint(0, 120)):
-                self.moveLeft()    
-    
-    # def hunt(self):
+                self.moveLeft()   
+
+    def moveRand(self, dist=9999):
+        r = randint(0, 7)
+        if r == 0:
+            self.moveUp(dist)
+        if r == 1:
+            self.moveDown(dist)
+        if r == 2:
+            self.moveLeft(dist)
+        if r == 3:
+            self.moveRight(dist)
+        if r == 4:
+            self.moveUp(dist)
+            self.moveLeft(dist)
+        if r == 5:
+            self.moveUp(dist)
+            self.moveRight(dist)
+        if r == 6:
+            self.moveDown(dist)
+            self.moveLeft(dist)
+        if r == 7:
+            self.moveDown(dist)
+            self.moveRight(dist)
+
+    def hunt(self):
+        if self.getHunger():
+            if self.getType() == 'doux':
+                self.moveDown()
+            if self.getType() == 'mort':
+                self.moveUp()
+            if self.getType() == 'tard':
+                self.moveLeft()
+            if self.getType() == 'vita':
+                self.moveRight() 
+                
+            self.moveRand()
+        else:
+            self.runHome()
 
 
     def getPosX(self):
