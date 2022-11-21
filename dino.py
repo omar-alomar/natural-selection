@@ -11,7 +11,7 @@ class Dino(pygame.sprite.Sprite):
         self.size = size
         self.hunger = True
         self.id = uuid.uuid4()
-        self.energy = 500
+        self.energy = 750
 
         if self.type == 'doux': # blue
             self.spriteSheet = pygame.image.load('assets/img/doux.png').convert_alpha()

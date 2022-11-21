@@ -102,7 +102,7 @@ class Base(pygame.sprite.Sprite):
 
     def reproduce(self, offset: float): 
         for dino in self.group:
-            option = randint(0,3)
+            option = randint(0,1)
 
             if dino.getSpeed() <= offset:
                 if dino.getSize() <= offset:
@@ -116,13 +116,13 @@ class Base(pygame.sprite.Sprite):
                     self.spawnDino(dino.getSpeed() - offset, dino.getSize() + offset)
 
             
-            elif option == 0 :
-                self.spawnDino(dino.getSpeed() + offset, dino.getSize() + offset)
-            elif option == 1:
-                self.spawnDino(dino.getSpeed() - offset, dino.getSize() - offset)
-            elif option == 2:
+            # elif option == 0 :
+            #     self.spawnDino(dino.getSpeed() + offset, dino.getSize() + offset)
+            # elif option == 1:
+            #     self.spawnDino(dino.getSpeed() - offset, dino.getSize() - offset)
+            elif option == 0:
                 self.spawnDino(dino.getSpeed() + offset, dino.getSize() - offset)
-            elif option == 3:
+            elif option == 1:
                 self.spawnDino(dino.getSpeed() - offset, dino.getSize() + offset)
 
 
