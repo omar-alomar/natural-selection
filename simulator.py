@@ -1,13 +1,36 @@
 import pygame
+import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from random import randint
 from const import WIDTH, HEIGHT, FPS_LIMIT
 from base import Base
 from food import Food
+import numpy as np
+
+# SETUP
+pygame.init()
+pygame.display.set_caption("Dino Evolution ")
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+clock = pygame.time.Clock()
+pixelFont = pygame.font.Font('assets/font/Pixeltype.ttf', 50)
+speeds = []
+sizes = []
+
+# PLOTS
+def init():  # give a clean slate to start
+    line.set_ydata([np.nan] * len(x))
+    return line,
+
+def animate(i):  # update the y values (every 1000ms)
+    line.set_ydata(np.random.randint(0, max_y, max_x))
+    return line,
 
 
 
-
+def updateGraph(speed, size):
+    speeds.append(speed)
+    sizes.append(size)
 
 def buildArena():
     bgSurf = pygame.Surface((WIDTH, HEIGHT))
@@ -39,17 +62,26 @@ def spawnFood(amount: int):
         foodGroup.add(food)
     return foodGroup
 
-# SETUP
-pygame.init()
-pygame.display.set_caption("Dino Evolution ")
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-clock = pygame.time.Clock()
-pixelFont = pygame.font.Font('assets/font/Pixeltype.ttf', 50)
+def avgSpeed(dinoGroup):
+    speedSum = 0
+    avgSpeed = 0
+    for dino in dinoGroup:
+        speedSum += dino.getSpeed()
+    if len(dinoGroup) > 0:
+        avgSpeed = speedSum / len(dinoGroup)
+    return avgSpeed
 
+def avgSize(dinoGroup):
+    sizeSum = 0
+    avgSize = 0
+    for dino in dinoGroup:
+        sizeSum += dino.getSize()
+    if len(dinoGroup) > 0:
+        avgSize = sizeSum / len(dinoGroup)
+    return avgSize
 #   !!! dinos are ONLY spawned & killed through bases !!!
 #       bases are what keep track of population.
 #   !!!!!! killing a dino directly WILL break everything !!!!!!
-
 
 # INITIAL SETTINGS:
 bases = pygame.sprite.Group()
@@ -74,11 +106,11 @@ allHome = False
 
 spawnDinos = pygame.USEREVENT + 0
 pygame.time.set_timer(spawnDinos, 2000)
-print(plt.show)
+
+
 # GAME LOOP
 while run:
     buildArena()
-
     # EVENT LOOP
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -87,14 +119,37 @@ while run:
         if event.type == spawnDinos:
             if allHome:
                 dayNo += 1
+                allHome = False
+                for base in bases:
+                    for dino in base.getDinoGroup():
+                        dino.setHunger(True)
                 for base in bases:
                     base.reproduce(0.3)
                     base.getDinoGroup().update()
                     foodGroup = spawnFood(10)
                     foodGroup.update()
-                    for dino in base.getDinoGroup():
-                        dino.setHunger(True)
-                        updateGraph(dino.getSpeed(), dino.getSize())
+                    updateGraph(avgSpeed(base.getDinoGroup()), avgSize(base.getDinoGroup()))
+                # plot 1
+                fig, ax = plt.subplots()
+                max_x = len(speeds)
+                max_y = len(speeds)
+
+                x = np.arange(0, max_x)
+                ax.set_ylim(0, max_y)
+                line, = ax.plot(x, speeds)
+
+                # plot 2
+                fig, ax = plt.subplots()
+                max_x = len(sizes)
+                max_y = len(sizes)
+
+                x = np.arange(0, max_x)
+                ax.set_ylim(0, max_y)
+                line, = ax.plot(x, sizes)
+
+                
+                plt.show()
+                
                         
     # DRAW BASES & DINOS
     bases.draw(screen)
@@ -285,36 +340,4 @@ while run:
     pygame.display.update()
     clock.tick(FPS_LIMIT)
 
-def createGraph():
-    # line 1 points
-    x1 = [dayNo]
-    y1 = [0]
-    
-    plt.plot(x1, y1, label = "Size")
-    
-    # line 2 points
-    x2 = [dayNo]
-    y2 = [0]
-    # plotting the line 2 points 
-    plt.plot(x2, y2, label = "Speed")
-
-    plt.xlabel('Day Number')
-    plt.ylabel('Speed and Size')
-    plt.title('Size vs Speed')
-
-    plt.legend()
-    plt.show()  
-
-def updateGraph(speed, size):
-    x1 = [dayNo]
-    y1 = [speed]
-
-    plt.plot(x1, y1, label = "Speed")
-
-    x2 = [dayNo]
-    y2 = [size]
-
-    plt.plot(x2,y2, label = "Size")
-
-def averageSpeed():
-    print('Average Speed')
+plt.tight_layout()
