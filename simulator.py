@@ -6,7 +6,10 @@ from random import randint
 from const import WIDTH, HEIGHT, FPS_LIMIT
 from base import Base
 from food import Food
+import csv
 import numpy as np
+
+f = open('output.csv', 'a', newline='')
 
 # SETUP
 pygame.init()
@@ -16,17 +19,6 @@ clock = pygame.time.Clock()
 pixelFont = pygame.font.Font('assets/font/Pixeltype.ttf', 50)
 speeds = []
 sizes = []
-
-# PLOTS
-def init():  # give a clean slate to start
-    line.set_ydata([np.nan] * len(x))
-    return line,
-
-def animate(i):  # update the y values (every 1000ms)
-    line.set_ydata(np.random.randint(0, max_y, max_x))
-    return line,
-
-
 
 def updateGraph(speed, size):
     speeds.append(speed)
@@ -85,10 +77,10 @@ def avgSize(dinoGroup):
 
 # INITIAL SETTINGS:
 bases = pygame.sprite.Group()
-douxBase = Base('doux', 15, 10, 1.3)
-mortBase = Base('mort', 15, 7, 1.7)
-tardBase = Base('tard', 20, 8, 1.5)
-vitaBase = Base('vita', 20, 8, 1.4)
+douxBase = Base('doux', 10, 5, 1.5)
+mortBase = Base('mort', 10, 5, 1.5)
+tardBase = Base('tard', 10, 10, 1.3)
+vitaBase = Base('vita', 10, 10, 1.3)
 bases.add(douxBase, mortBase, tardBase, vitaBase)
 
 # FOOD
@@ -124,31 +116,36 @@ while run:
                     for dino in base.getDinoGroup():
                         dino.setHunger(True)
                 for base in bases:
-                    base.reproduce(0.3)
+                    writer = csv.writer(f)
+                    tup = (base.getType(), dayNo, avgSpeed(base.getDinoGroup()), avgSize(base.getDinoGroup()))
+                    writer.writerow(tup)
+                    
+                    base.reproduce(0.5)
                     base.getDinoGroup().update()
                     foodGroup = spawnFood(10)
                     foodGroup.update()
-                    updateGraph(avgSpeed(base.getDinoGroup()), avgSize(base.getDinoGroup()))
+                    
+                    # updateGraph(avgSpeed(base.getDinoGroup()), avgSize(base.getDinoGroup()))
                 # plot 1
-                fig, ax = plt.subplots()
-                max_x = len(speeds)
-                max_y = len(speeds)
+                # fig, ax = plt.subplots()
+                # max_x = len(speeds)
+                # max_y = len(speeds)
 
-                x = np.arange(0, max_x)
-                ax.set_ylim(0, max_y)
-                line, = ax.plot(x, speeds)
+                # x = np.arange(0, max_x)
+                # ax.set_ylim(0, max_y)
+                # line, = ax.plot(x, speeds)
 
-                # plot 2
-                fig, ax = plt.subplots()
-                max_x = len(sizes)
-                max_y = len(sizes)
+                # # plot 2
+                # fig, ax = plt.subplots()
+                # max_x = len(sizes)
+                # max_y = len(sizes)
 
-                x = np.arange(0, max_x)
-                ax.set_ylim(0, max_y)
-                line, = ax.plot(x, sizes)
+                # x = np.arange(0, max_x)
+                # ax.set_ylim(0, max_y)
+                # line, = ax.plot(x, sizes)
 
                 
-                plt.show()
+                # plt.show()
                 
                         
     # DRAW BASES & DINOS
@@ -335,9 +332,18 @@ while run:
         for dino in base.getDinoGroup():
             if dino.getEnergy() <= 0:
                 base.killDino(dino.getId())
-                
+    
+    # # Random movement
+    # for base in bases:
+    #     dinos = base.getDinos()
+    #     for dino in base.getDinoGroup():
+    #         if dino.getHunger():
+    #             dino.hunt()
+
+
 
     pygame.display.update()
     clock.tick(FPS_LIMIT)
 
 plt.tight_layout()
+f.close()

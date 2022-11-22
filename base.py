@@ -56,7 +56,9 @@ class Base(pygame.sprite.Sprite):
         tiled_image = pygame.transform.scale2x(tiled_image)
         tiled_image.set_colorkey('Black')
         return tiled_image
-    
+
+    def getType(self):
+        return self.type
     # HELPER:
     # Necessary to render bases properly across multiple resolutions
     def setRenderOffset(self):
